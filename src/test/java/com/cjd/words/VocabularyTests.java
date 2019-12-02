@@ -8,7 +8,7 @@ class VocabularyTests {
 
     @Test
     void contextLoads() {
-
+        System.out.println("hello world");
     }
 
 }

@@ -1,5 +1,7 @@
 package com.cjd.words;
 
+import com.cjd.words.models.VocabularyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
