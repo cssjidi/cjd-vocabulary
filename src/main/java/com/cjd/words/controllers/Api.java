@@ -59,7 +59,7 @@ public class Api{
     @PostMapping(path="/search")
     public @ResponseBody String search(@RequestParam Map map){
         System.out.println(map);
-        Vocabulary vo = new Vocabulary();
+
         try
         {
             Document document = Jsoup.connect("http://dict-mobile.iciba.com/interface/index.php?c=word&m=getsuggest&word="+map.get("word")+"&nums=5&ck=709a0db45332167b0e2ce1868b84773e&timestamp=1575017298804&client=6&uid=0&is_need_mean=1&callback=jsonp_1575017298804_36121").get();
@@ -71,16 +71,21 @@ public class Api{
                 JSONObject jsonLevel2 = new JSONObject(array.get(i).toString());
                 if(jsonLevel2.has("means")) {
                     JSONArray arrayLevel2 = new JSONArray(jsonLevel2.get("means").toString());
+                    String str = "";
                     for (int j = 0; j < arrayLevel2.length(); j++) {
                         JSONObject jsonLevel3 = new JSONObject(arrayLevel2.get(j).toString());
                         JSONArray array3 = new JSONArray(jsonLevel3.get("means").toString());
                         System.out.println(array3.join(","));
                         System.out.println(jsonLevel3.get("part"));
+                        str += jsonLevel3.get("part") + array3.join(",")+"\n";
 //                        for(int k=0;k<array3.length();k++){
 //                            System.out.println(array3.get(k).toString());
 //                        }
                     }
+                    Vocabulary vo = new Vocabulary();
                     vo.setName(jsonLevel2.get("key").toString());
+                    vo.setDescription(str);
+                    vocabularyRepository.save(vo);
                     System.out.println(jsonLevel2.get("key"));
                 }
             }
