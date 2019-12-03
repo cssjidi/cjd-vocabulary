@@ -23,10 +23,8 @@ import java.io.IOException;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
@@ -61,6 +59,7 @@ public class Api{
     @PostMapping(path="/search")
     public @ResponseBody String search(@RequestParam Map map){
         System.out.println(map);
+        Vocabulary vo = new Vocabulary();
         try
         {
             Document document = Jsoup.connect("http://dict-mobile.iciba.com/interface/index.php?c=word&m=getsuggest&word="+map.get("word")+"&nums=5&ck=709a0db45332167b0e2ce1868b84773e&timestamp=1575017298804&client=6&uid=0&is_need_mean=1&callback=jsonp_1575017298804_36121").get();
@@ -75,10 +74,13 @@ public class Api{
                     for (int j = 0; j < arrayLevel2.length(); j++) {
                         JSONObject jsonLevel3 = new JSONObject(arrayLevel2.get(j).toString());
                         JSONArray array3 = new JSONArray(jsonLevel3.get("means").toString());
-                        for(int k=0;k<array3.length();k++){
-                            System.out.println(array3.get(k).toString());
-                        }
+                        System.out.println(array3.join(","));
+                        System.out.println(jsonLevel3.get("part"));
+//                        for(int k=0;k<array3.length();k++){
+//                            System.out.println(array3.get(k).toString());
+//                        }
                     }
+                    vo.setName(jsonLevel2.get("key").toString());
                     System.out.println(jsonLevel2.get("key"));
                 }
             }
@@ -109,8 +111,28 @@ public class Api{
 //            //http://dict-mobile.iciba.com/interface/index.php?c=word&m=getsuggest&word=gt&nums=5&ck=709a0db45332167b0e2ce1868b84773e&timestamp=1575017298804&client=6&uid=0&is_need_mean=1&callback=jsonp_1575017298804_36121
 //        }
     }
-    private void updateRecord(){
-
+    private void updateRecord(String key){
+        String[][] shortWord = new String[][]{
+                {"prep.","preposition"},
+                {"pron.","pronoun"},
+                {"n.","noun"},
+                {"v.","verb"},
+                {"conj.","conjunction"},
+                {"vi.","intransitive"},
+                {"vt.","transitive"},
+                {"aux.v","auxiliary"},
+                {"adj.","adjective"},
+                {"adv.","adverb"},
+                {"art.","article"},
+                {"num.","numeral"},
+                {"int.","interjection"},
+                {"art.","article"},
+                {"u.","uncountableNoun"},
+                {"c.","countableNoun"},
+                {"pl.","plural"},
+        };
+        Arrays.binarySearch(shortWord, key);
+        System.out.println(Arrays.binarySearch(shortWord, key));
     }
     private Boolean findRecord(String name){
         int exists = db.queryForObject("SELECT COUNT(*) FROM cjd_words WHERE 1=1 AND name='"+name+"'",int.class);

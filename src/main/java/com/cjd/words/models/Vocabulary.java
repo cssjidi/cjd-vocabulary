@@ -33,7 +33,10 @@ public class Vocabulary {
     private String article;
     private String numeral;
     private String interjection;
+    public Void Vocabulary(String key,String Value){
 
+        return null;
+    }
     public String getName(){return this.name;}
     public Long getId() {
         return id;
